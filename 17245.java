@@ -36,26 +36,45 @@ class Main {
             }
         }
 
-        System.out.println("총합 : " + sum);
-
         br.close();
 
         for (int i = 1; i <= max; i++) {
             if (hash[i]) {
+                if (i == max) {
+                    hashMap[i] = -1;
+                }
                 hashMap[previous] = i;
                 previous = i;
             }
         }
 
-        for (int i = hashMap[0]; i <= max; i++) {
-            System.out.println(i + "의 개수 : " + offset[i]);
-        }
-
-        for (int i = hashMap[0]; i <= max && sum > coolingCount * 2; i = hashMap[i]) {
+        while (max > 0 && sum > coolingCount * 2) {
             cycleCount++;
-            for (int j = hashMap[i]; j <= max && sum > coolingCount * 2; j = hashMap[j]) {
+
+            for (int j = hashMap[0], prev = 0; j > -1 && sum > coolingCount * 2; j = hashMap[j - 1]) {
+                if (j == 0) {
+                    break;
+                } else if (j == max) {
+                    max--;
+                }
+                // System.out.println(j + "의 hashMap : " + hashMap[j]);
+
                 coolingCount += offset[j];
-                System.out.println(coolingCount);
+                offset[j - 1] = offset[j];
+                offset[j] = 0;
+                hashMap[j - 1] = hashMap[j];
+                hashMap[j] = 0;
+
+                if (j - 1 != 0)
+                    hashMap[prev] = j - 1;
+
+                prev = j - 1;
+
+                // System.out.println(prev + "의 hashMap : " + hashMap[prev]);
+                // System.out.println(j + " " + coolingCount);
+
+                if (hashMap[j - 1] == -1)
+                    break;
             }
         }
 
